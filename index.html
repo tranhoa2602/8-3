@@ -1,266 +1,399 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-<head>
-<meta charset="UTF-8">
-<title>For My Love 💖</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Love Lock 💖</title>
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif}
-body{
-height:100vh;
-overflow:hidden;
-background:radial-gradient(circle at top,#ff6b9d,#1e1e2f);
-color:white;
-display:flex;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-}
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family:
+          Segoe UI,
+          sans-serif;
+      }
 
-/* Loading */
-#loading{
-position:fixed;
-inset:0;
-background:black;
-display:flex;
-justify-content:center;
-align-items:center;
-font-size:30px;
-z-index:999;
-animation:fadeOut 3s forwards 3s;
-}
-@keyframes fadeOut{
-to{opacity:0;visibility:hidden}
-}
+      body {
+        height: 100vh;
+        overflow: hidden;
+        background:
+          linear-gradient(45deg, #f8c8dc 25%, transparent 25%) -20px 0,
+          linear-gradient(-45deg, #f8c8dc 25%, transparent 25%) -20px 0,
+          linear-gradient(45deg, transparent 75%, #f8c8dc 75%),
+          linear-gradient(-45deg, transparent 75%, #f8c8dc 75%);
+        background-size: 40px 40px;
+        background-color: #ffd6e7;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
 
-/* Stars */
-.star{
-position:absolute;
-width:2px;height:2px;
-background:white;
-opacity:.8;
-animation:twinkle 2s infinite alternate;
-}
-@keyframes twinkle{
-from{opacity:.3}
-to{opacity:1}
-}
+      /* LOCK */
+      .lock-box {
+        background: #ffeaf3;
+        padding: 40px;
+        border-radius: 30px;
+        display: flex;
+        gap: 50px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        transition: 1s;
+      }
 
-/* Floating hearts */
-.heart{
-position:absolute;
-animation:float 6s linear forwards;
-}
-@keyframes float{
-0%{transform:translateY(0) scale(1);opacity:1}
-100%{transform:translateY(-800px) scale(2);opacity:0}
-}
+      .hide {
+        transform: translateY(-120%);
+        opacity: 0;
+      }
 
-/* Menu */
-.menu{
-position:fixed;
-bottom:30px;
-display:flex;
-gap:20px;
-opacity:0;
-transform:translateY(100px);
-transition:1s;
-}
-.menu.show{
-opacity:1;
-transform:translateY(0);
-}
-.menu button{
-width:70px;height:70px;
-border:none;border-radius:50%;
-font-size:24px;
-cursor:pointer;
-background:white;
-color:#ff4d6d;
-box-shadow:0 0 20px #ff4d6d;
-transition:.3s;
-}
-.menu button:hover{
-transform:scale(1.2);
-background:#ff4d6d;
-color:white;
-}
+      .lock-box img {
+        width: 260px;
+        height: 360px;
+        object-fit: cover;
+        border-radius: 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      }
 
-/* Envelope */
-.envelope{
-position:absolute;
-width:320px;height:200px;
-background:#fff;
-border-radius:10px;
-transform:scale(0);
-transition:.6s;
-color:#ff4d6d;
-display:flex;
-justify-content:center;
-align-items:center;
-text-align:center;
-padding:20px;
-}
-.envelope.show{transform:scale(1)}
+      .lock-right {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
 
-/* Slideshow */
-.slideshow{
-position:absolute;
-top:40px;
-width:300px;height:200px;
-border-radius:15px;
-overflow:hidden;
-box-shadow:0 0 20px #ff4d6d;
-}
-.slideshow img{
-position:absolute;
-width:100%;height:100%;
-object-fit:cover;
-opacity:0;
-transition:1s;
-}
-.slideshow img.active{opacity:1}
+      .heart {
+        font-size: 28px;
+        color: #ff4d88;
+        margin-bottom: 15px;
+      }
 
-/* Input */
-input{
-padding:8px 15px;
-border:none;border-radius:20px;
-margin-top:260px;
-outline:none;
-}
-button.start{
-margin-left:10px;
-padding:8px 15px;
-border:none;border-radius:20px;
-background:#ff4d6d;
-color:white;
-cursor:pointer;
-}
+      .dots {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 25px;
+      }
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 2px solid #ff4d88;
+      }
+      .dot.active {
+        background: #ff4d88;
+      }
 
-canvas{
-position:fixed;
-inset:0;
-pointer-events:none;
-}
+      .keypad {
+        display: grid;
+        grid-template-columns: repeat(3, 70px);
+        gap: 15px;
+      }
+      .key {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: white;
+        border: none;
+        font-size: 20px;
+        color: #ff4d88;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      .key:hover {
+        transform: scale(1.1);
+        background: #ff4d88;
+        color: white;
+      }
 
-</style>
-</head>
-<body>
+      /* MENU */
+      .menu {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #ffb6d9, #ffcde6);
+        transform: translateY(100%);
+        transition: 1s;
+      }
+      .menu.show {
+        transform: translateY(0);
+      }
 
-<div id="loading">Loading Love... 💖</div>
+      .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 280px);
+        grid-template-rows: repeat(2, 150px);
+        gap: 40px;
+      }
 
-<div class="slideshow">
-<img src="https://picsum.photos/400/300?1" class="active">
-<img src="https://picsum.photos/400/300?2">
-<img src="https://picsum.photos/400/300?3">
-</div>
+      .card {
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(20px);
+        border-radius: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+        cursor: pointer;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+      }
+      .card:hover {
+        transform: scale(1.05);
+        background: white;
+      }
+      .card span {
+        font-size: 45px;
+        margin-bottom: 10px;
+      }
 
-<input type="text" id="loverName" placeholder="Nhập tên người ấy 💕">
-<button class="start" onclick="startLove()">Bắt đầu</button>
+      /* MUSIC POPUP */
+      .music-popup {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 182, 217, 0.6);
+        backdrop-filter: blur(10px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.4s;
+      }
+      .music-popup.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
 
-<div class="envelope" id="letter"></div>
+      .music-card {
+        width: 340px;
+        background: white;
+        border-radius: 30px;
+        padding: 25px;
+        text-align: center;
+        position: relative;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      }
 
-<div class="menu" id="menu">
-<button onclick="playMusic()">🎵</button>
-<button onclick="openLetter()">💌</button>
-<button onclick="createHeartBurst()">💖</button>
-<button onclick="launchFirework()">🎆</button>
-</div>
+      .close-btn {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        background: #ff4d88;
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
 
-<audio id="music" loop>
-<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
-</audio>
+      .album {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 20px;
+        margin: 15px 0;
+      }
 
-<canvas id="fireworks"></canvas>
+      .controls {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin: 15px 0;
+      }
+      .controls button {
+        background: none;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: #ff4d88;
+      }
 
-<script>
+      .play-btn {
+        background: #ff4d88 !important;
+        color: white !important;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+      }
 
-/* Stars */
-for(let i=0;i<100;i++){
-let s=document.createElement("div")
-s.className="star"
-s.style.left=Math.random()*100+"vw"
-s.style.top=Math.random()*100+"vh"
-s.style.animationDuration=(1+Math.random()*2)+"s"
-document.body.appendChild(s)
-}
+      .playlist {
+        margin-top: 15px;
+        text-align: left;
+      }
+      .track {
+        padding: 8px;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+      .track.active {
+        background: #ffe3ef;
+      }
+    </style>
+  </head>
 
-/* Show menu */
-setTimeout(()=>{
-document.getElementById("menu").classList.add("show")
-},4000)
+  <body>
+    <!-- LOCK -->
+    <div class="lock-box" id="lockBox">
+      <img src="picture/pic1.jpg" alt="My Love" />
+      <div class="lock-right">
+        <div class="heart">💗</div>
+        <div class="dots">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <div class="keypad">
+          <button class="key" onclick="press(1)">1</button>
+          <button class="key" onclick="press(2)">2</button>
+          <button class="key" onclick="press(3)">3</button>
+          <button class="key" onclick="press(4)">4</button>
+          <button class="key" onclick="press(5)">5</button>
+          <button class="key" onclick="press(6)">6</button>
+          <button class="key" onclick="press(7)">7</button>
+          <button class="key" onclick="press(8)">8</button>
+          <button class="key" onclick="press(9)">9</button>
+          <div></div>
+          <button class="key" onclick="press(0)">0</button>
+          <button class="key" onclick="clearPass()">⌫</button>
+        </div>
+      </div>
+    </div>
 
-/* Slideshow */
-let slides=document.querySelectorAll(".slideshow img")
-let index=0
-setInterval(()=>{
-slides[index].classList.remove("active")
-index=(index+1)%slides.length
-slides[index].classList.add("active")
-},3000)
+    <!-- MENU -->
+    <div class="menu" id="menu">
+      <div class="menu-grid">
+        <div class="card" onclick="openMusic()"><span>🎵</span>Music</div>
+        <div class="card"><span>💌</span>Letter</div>
+        <div class="card"><span>🌸</span>Image</div>
+        <div class="card"><span>🎁</span>Gift</div>
+      </div>
+    </div>
 
-/* Start */
-function startLove(){
-let name=document.getElementById("loverName").value
-if(name==="") return alert("Nhập tên vào 😝")
-document.getElementById("letter").innerHTML=
-"<h3>Gửi "+name+" 💖</h3><br>Cảm ơn em đã đến bên anh.<br>Em là điều đẹp nhất trong cuộc đời anh ✨"
-document.getElementById("music").play()
-}
+    <!-- MUSIC -->
+    <div class="music-popup" id="musicPopup">
+      <div class="music-card">
+        <div class="close-btn" onclick="closeMusic()">✕</div>
+        <h3>🎵 MUSIC PLAYER</h3>
+        <img class="album" src="" />
+        <h2 id="songTitle">Chưa có bài nhạc</h2>
+        <div class="controls">
+          <button onclick="prevSong()">⏮</button>
+          <button class="play-btn" onclick="toggleMusic()">⏯</button>
+          <button onclick="nextSong()">⏭</button>
+        </div>
+        <div class="playlist">
+          <div class="track active">Lỡ Say Bye Là Bye</div>
+          <div class="track">Nơi Này Có Anh</div>
+        </div>
+      </div>
+    </div>
 
-/* Letter */
-function openLetter(){
-document.getElementById("letter").classList.toggle("show")
-}
+    <div id="youtube-player"></div>
+    <script src="https://www.youtube.com/iframe_api"></script>
 
-/* Hearts burst */
-function createHeartBurst(){
-for(let i=0;i<20;i++){
-let heart=document.createElement("div")
-heart.className="heart"
-heart.innerHTML="💖"
-heart.style.left=Math.random()*100+"vw"
-heart.style.fontSize=(15+Math.random()*30)+"px"
-document.body.appendChild(heart)
-setTimeout(()=>heart.remove(),6000)
-}
-}
+    <script>
+      const correctPassword = "0302";
+      let input = "";
+      let player;
+      let isPlaying = false;
 
-/* Fireworks */
-let canvas=document.getElementById("fireworks")
-let ctx=canvas.getContext("2d")
-canvas.width=window.innerWidth
-canvas.height=window.innerHeight
+      let playlist = [
+        { title: "Lỡ Say Bye Là Bye", id: "dQw4w9WgXcQ" },
+        { title: "Nơi Này Có Anh", id: "knW7-x7Y7RE" },
+      ];
 
-function launchFirework(){
-for(let i=0;i<100;i++){
-let x=canvas.width/2
-let y=canvas.height/2
-let angle=Math.random()*2*Math.PI
-let speed=Math.random()*5+2
-let dx=Math.cos(angle)*speed
-let dy=Math.sin(angle)*speed
-let life=100
-let particle={x,y,dx,dy,life}
-animateParticle(particle)
-}
-}
+      let currentIndex = 0;
 
-function animateParticle(p){
-function frame(){
-if(p.life<=0)return
-ctx.fillStyle="rgba(255,77,109,"+(p.life/100)+")"
-ctx.beginPath()
-ctx.arc(p.x,p.y,3,0,Math.PI*2)
-ctx.fill()
-p.x+=p.dx
-p.y+=p.dy
-p.life--
-requestAnimationFrame(frame)
-}
-frame()
-}
+      /* LOCK */
+      function press(num) {
+        if (input.length >= 4) return;
+        input += num;
+        updateDots();
+        if (input.length === 4) {
+          if (input === correctPassword) {
+            unlock();
+          } else {
+            setTimeout(() => {
+              alert("Sai mật khẩu 😝");
+              input = "";
+              updateDots();
+            }, 200);
+          }
+        }
+      }
+      function clearPass() {
+        input = "";
+        updateDots();
+      }
+      function updateDots() {
+        document.querySelectorAll(".dot").forEach((dot, i) => {
+          dot.classList.toggle("active", i < input.length);
+        });
+      }
+      function unlock() {
+        document.getElementById("lockBox").classList.add("hide");
+        setTimeout(() => {
+          document.getElementById("menu").classList.add("show");
+        }, 600);
+      }
 
-</script>
-</body>
+      /* MUSIC */
+      function openMusic() {
+        document.getElementById("musicPopup").classList.add("show");
+        loadSong(currentIndex);
+      }
+      function closeMusic() {
+        document.getElementById("musicPopup").classList.remove("show");
+      }
+
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player("youtube-player", { height: "0", width: "0" });
+      }
+
+      function loadSong(index) {
+        currentIndex = index;
+        let song = playlist[index];
+        player.loadVideoById(song.id);
+        document.getElementById("songTitle").innerText = song.title;
+        document.querySelector(".album").src =
+          "https://img.youtube.com/vi/" + song.id + "/hqdefault.jpg";
+        document.querySelectorAll(".track").forEach((t, i) => {
+          t.classList.toggle("active", i === index);
+        });
+        isPlaying = true;
+      }
+
+      function toggleMusic() {
+        if (!player) return;
+        if (isPlaying) {
+          player.pauseVideo();
+        } else {
+          player.playVideo();
+        }
+        isPlaying = !isPlaying;
+      }
+
+      function prevSong() {
+        currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+        loadSong(currentIndex);
+      }
+
+      function nextSong() {
+        currentIndex = (currentIndex + 1) % playlist.length;
+        loadSong(currentIndex);
+      }
+    </script>
+  </body>
 </html>
