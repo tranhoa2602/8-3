@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>For My Love 💖</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif}
+body{
+height:100vh;
+overflow:hidden;
+background:radial-gradient(circle at top,#ff6b9d,#1e1e2f);
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+}
+
+/* Loading */
+#loading{
+position:fixed;
+inset:0;
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:30px;
+z-index:999;
+animation:fadeOut 3s forwards 3s;
+}
+@keyframes fadeOut{
+to{opacity:0;visibility:hidden}
+}
+
+/* Stars */
+.star{
+position:absolute;
+width:2px;height:2px;
+background:white;
+opacity:.8;
+animation:twinkle 2s infinite alternate;
+}
+@keyframes twinkle{
+from{opacity:.3}
+to{opacity:1}
+}
+
+/* Floating hearts */
+.heart{
+position:absolute;
+animation:float 6s linear forwards;
+}
+@keyframes float{
+0%{transform:translateY(0) scale(1);opacity:1}
+100%{transform:translateY(-800px) scale(2);opacity:0}
+}
+
+/* Menu */
+.menu{
+position:fixed;
+bottom:30px;
+display:flex;
+gap:20px;
+opacity:0;
+transform:translateY(100px);
+transition:1s;
+}
+.menu.show{
+opacity:1;
+transform:translateY(0);
+}
+.menu button{
+width:70px;height:70px;
+border:none;border-radius:50%;
+font-size:24px;
+cursor:pointer;
+background:white;
+color:#ff4d6d;
+box-shadow:0 0 20px #ff4d6d;
+transition:.3s;
+}
+.menu button:hover{
+transform:scale(1.2);
+background:#ff4d6d;
+color:white;
+}
+
+/* Envelope */
+.envelope{
+position:absolute;
+width:320px;height:200px;
+background:#fff;
+border-radius:10px;
+transform:scale(0);
+transition:.6s;
+color:#ff4d6d;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:20px;
+}
+.envelope.show{transform:scale(1)}
+
+/* Slideshow */
+.slideshow{
+position:absolute;
+top:40px;
+width:300px;height:200px;
+border-radius:15px;
+overflow:hidden;
+box-shadow:0 0 20px #ff4d6d;
+}
+.slideshow img{
+position:absolute;
+width:100%;height:100%;
+object-fit:cover;
+opacity:0;
+transition:1s;
+}
+.slideshow img.active{opacity:1}
+
+/* Input */
+input{
+padding:8px 15px;
+border:none;border-radius:20px;
+margin-top:260px;
+outline:none;
+}
+button.start{
+margin-left:10px;
+padding:8px 15px;
+border:none;border-radius:20px;
+background:#ff4d6d;
+color:white;
+cursor:pointer;
+}
+
+canvas{
+position:fixed;
+inset:0;
+pointer-events:none;
+}
+
+</style>
+</head>
+<body>
+
+<div id="loading">Loading Love... 💖</div>
+
+<div class="slideshow">
+<img src="https://picsum.photos/400/300?1" class="active">
+<img src="https://picsum.photos/400/300?2">
+<img src="https://picsum.photos/400/300?3">
+</div>
+
+<input type="text" id="loverName" placeholder="Nhập tên người ấy 💕">
+<button class="start" onclick="startLove()">Bắt đầu</button>
+
+<div class="envelope" id="letter"></div>
+
+<div class="menu" id="menu">
+<button onclick="playMusic()">🎵</button>
+<button onclick="openLetter()">💌</button>
+<button onclick="createHeartBurst()">💖</button>
+<button onclick="launchFirework()">🎆</button>
+</div>
+
+<audio id="music" loop>
+<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
+</audio>
+
+<canvas id="fireworks"></canvas>
+
+<script>
+
+/* Stars */
+for(let i=0;i<100;i++){
+let s=document.createElement("div")
+s.className="star"
+s.style.left=Math.random()*100+"vw"
+s.style.top=Math.random()*100+"vh"
+s.style.animationDuration=(1+Math.random()*2)+"s"
+document.body.appendChild(s)
+}
+
+/* Show menu */
+setTimeout(()=>{
+document.getElementById("menu").classList.add("show")
+},4000)
+
+/* Slideshow */
+let slides=document.querySelectorAll(".slideshow img")
+let index=0
+setInterval(()=>{
+slides[index].classList.remove("active")
+index=(index+1)%slides.length
+slides[index].classList.add("active")
+},3000)
+
+/* Start */
+function startLove(){
+let name=document.getElementById("loverName").value
+if(name==="") return alert("Nhập tên vào 😝")
+document.getElementById("letter").innerHTML=
+"<h3>Gửi "+name+" 💖</h3><br>Cảm ơn em đã đến bên anh.<br>Em là điều đẹp nhất trong cuộc đời anh ✨"
+document.getElementById("music").play()
+}
+
+/* Letter */
+function openLetter(){
+document.getElementById("letter").classList.toggle("show")
+}
+
+/* Hearts burst */
+function createHeartBurst(){
+for(let i=0;i<20;i++){
+let heart=document.createElement("div")
+heart.className="heart"
+heart.innerHTML="💖"
+heart.style.left=Math.random()*100+"vw"
+heart.style.fontSize=(15+Math.random()*30)+"px"
+document.body.appendChild(heart)
+setTimeout(()=>heart.remove(),6000)
+}
+}
+
+/* Fireworks */
+let canvas=document.getElementById("fireworks")
+let ctx=canvas.getContext("2d")
+canvas.width=window.innerWidth
+canvas.height=window.innerHeight
+
+function launchFirework(){
+for(let i=0;i<100;i++){
+let x=canvas.width/2
+let y=canvas.height/2
+let angle=Math.random()*2*Math.PI
+let speed=Math.random()*5+2
+let dx=Math.cos(angle)*speed
+let dy=Math.sin(angle)*speed
+let life=100
+let particle={x,y,dx,dy,life}
+animateParticle(particle)
+}
+}
+
+function animateParticle(p){
+function frame(){
+if(p.life<=0)return
+ctx.fillStyle="rgba(255,77,109,"+(p.life/100)+")"
+ctx.beginPath()
+ctx.arc(p.x,p.y,3,0,Math.PI*2)
+ctx.fill()
+p.x+=p.dx
+p.y+=p.dy
+p.life--
+requestAnimationFrame(frame)
+}
+frame()
+}
+
+</script>
+</body>
+</html>
