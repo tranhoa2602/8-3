@@ -60,7 +60,6 @@
         align-items: center;
         justify-content: center;
       }
-
       .heart {
         font-size: 28px;
         color: #ff4d88;
@@ -151,8 +150,8 @@
         margin-bottom: 10px;
       }
 
-      /* MUSIC POPUP */
-      .music-popup {
+      /* POPUP */
+      .popup {
         position: absolute;
         top: 0;
         left: 0;
@@ -167,16 +166,17 @@
         pointer-events: none;
         transition: 0.4s;
       }
-      .music-popup.show {
+
+      .popup.show {
         opacity: 1;
         pointer-events: auto;
       }
 
-      .music-card {
-        width: 340px;
+      .popup-card {
+        width: 350px;
         background: white;
         border-radius: 30px;
-        padding: 25px;
+        padding: 30px;
         text-align: center;
         position: relative;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
@@ -197,47 +197,11 @@
         cursor: pointer;
       }
 
-      .album {
-        width: 180px;
-        height: 180px;
-        object-fit: cover;
-        border-radius: 20px;
-        margin: 15px 0;
-      }
-
-      .controls {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        margin: 15px 0;
-      }
-      .controls button {
-        background: none;
-        border: none;
-        font-size: 20px;
-        cursor: pointer;
+      .days-number {
+        font-size: 40px;
         color: #ff4d88;
-      }
-
-      .play-btn {
-        background: #ff4d88 !important;
-        color: white !important;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-      }
-
-      .playlist {
-        margin-top: 15px;
-        text-align: left;
-      }
-      .track {
-        padding: 8px;
-        border-radius: 10px;
-        cursor: pointer;
-      }
-      .track.active {
-        background: #ffe3ef;
+        margin: 20px 0;
+        font-weight: bold;
       }
     </style>
   </head>
@@ -245,7 +209,7 @@
   <body>
     <!-- LOCK -->
     <div class="lock-box" id="lockBox">
-      <img src="picture/pic1.jpg" alt="My Love" />
+      <img src="picture/pic1.jpg" />
       <div class="lock-right">
         <div class="heart">💗</div>
         <div class="dots">
@@ -274,49 +238,29 @@
     <!-- MENU -->
     <div class="menu" id="menu">
       <div class="menu-grid">
-        <div class="card" onclick="openMusic()"><span>🎵</span>Music</div>
+        <div class="card" onclick="openDays()">
+          <span>⏳</span>Days Together
+        </div>
         <div class="card"><span>💌</span>Letter</div>
         <div class="card"><span>🌸</span>Image</div>
         <div class="card"><span>🎁</span>Gift</div>
       </div>
     </div>
 
-    <!-- MUSIC -->
-    <div class="music-popup" id="musicPopup">
-      <div class="music-card">
-        <div class="close-btn" onclick="closeMusic()">✕</div>
-        <h3>🎵 MUSIC PLAYER</h3>
-        <img class="album" src="" />
-        <h2 id="songTitle">Chưa có bài nhạc</h2>
-        <div class="controls">
-          <button onclick="prevSong()">⏮</button>
-          <button class="play-btn" onclick="toggleMusic()">⏯</button>
-          <button onclick="nextSong()">⏭</button>
-        </div>
-        <div class="playlist">
-          <div class="track active">Lỡ Say Bye Là Bye</div>
-          <div class="track">Nơi Này Có Anh</div>
-        </div>
+    <!-- DAYS POPUP -->
+    <div class="popup" id="daysPopup">
+      <div class="popup-card">
+        <div class="close-btn" onclick="closeDays()">✕</div>
+        <h2>Chúng ta đã bên nhau</h2>
+        <div class="days-number" id="daysCount">0</div>
+        <p>ngày rồi đó 💖</p>
       </div>
     </div>
-
-    <div id="youtube-player"></div>
-    <script src="https://www.youtube.com/iframe_api"></script>
 
     <script>
       const correctPassword = "0302";
       let input = "";
-      let player;
-      let isPlaying = false;
 
-      let playlist = [
-        { title: "Lỡ Say Bye Là Bye", id: "dQw4w9WgXcQ" },
-        { title: "Nơi Này Có Anh", id: "knW7-x7Y7RE" },
-      ];
-
-      let currentIndex = 0;
-
-      /* LOCK */
       function press(num) {
         if (input.length >= 4) return;
         input += num;
@@ -333,15 +277,18 @@
           }
         }
       }
+
       function clearPass() {
         input = "";
         updateDots();
       }
+
       function updateDots() {
         document.querySelectorAll(".dot").forEach((dot, i) => {
           dot.classList.toggle("active", i < input.length);
         });
       }
+
       function unlock() {
         document.getElementById("lockBox").classList.add("hide");
         setTimeout(() => {
@@ -349,50 +296,21 @@
         }, 600);
       }
 
-      /* MUSIC */
-      function openMusic() {
-        document.getElementById("musicPopup").classList.add("show");
-        loadSong(currentIndex);
-      }
-      function closeMusic() {
-        document.getElementById("musicPopup").classList.remove("show");
+      function openDays() {
+        document.getElementById("daysPopup").classList.add("show");
+        calculateDays();
       }
 
-      function onYouTubeIframeAPIReady() {
-        player = new YT.Player("youtube-player", { height: "0", width: "0" });
+      function closeDays() {
+        document.getElementById("daysPopup").classList.remove("show");
       }
 
-      function loadSong(index) {
-        currentIndex = index;
-        let song = playlist[index];
-        player.loadVideoById(song.id);
-        document.getElementById("songTitle").innerText = song.title;
-        document.querySelector(".album").src =
-          "https://img.youtube.com/vi/" + song.id + "/hqdefault.jpg";
-        document.querySelectorAll(".track").forEach((t, i) => {
-          t.classList.toggle("active", i === index);
-        });
-        isPlaying = true;
-      }
-
-      function toggleMusic() {
-        if (!player) return;
-        if (isPlaying) {
-          player.pauseVideo();
-        } else {
-          player.playVideo();
-        }
-        isPlaying = !isPlaying;
-      }
-
-      function prevSong() {
-        currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
-        loadSong(currentIndex);
-      }
-
-      function nextSong() {
-        currentIndex = (currentIndex + 1) % playlist.length;
-        loadSong(currentIndex);
+      function calculateDays() {
+        let startDate = new Date("2024-02-14"); // 👉 đổi ngày bắt đầu yêu tại đây
+        let today = new Date();
+        let diff = today - startDate;
+        let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        document.getElementById("daysCount").innerText = days;
       }
     </script>
   </body>
