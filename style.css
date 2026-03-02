@@ -108,6 +108,7 @@ body {
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column; /* 👈 thêm */
   justify-content: center;
   align-items: center;
   background: linear-gradient(135deg, #ffb6d9, #ffcde6);
@@ -124,6 +125,124 @@ body {
   grid-template-columns: repeat(2, 280px);
   grid-template-rows: repeat(2, 150px);
   gap: 40px;
+  margin-bottom: 120px;
+}
+
+.music-player {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 900px;
+  background: #1e1e2f;
+  color: white;
+  padding: 15px 25px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* LEFT */
+.music-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.music-left img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.music-title {
+  font-weight: bold;
+}
+
+.music-sub {
+  font-size: 13px;
+  opacity: 0.6;
+}
+
+/* CENTER */
+.music-center {
+  flex: 1;
+  text-align: center;
+}
+
+.controls {
+  margin-bottom: 8px;
+}
+
+.controls button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+.progress-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#progressBar {
+  flex: 1;
+}
+
+/* RIGHT */
+.music-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#volumeBar {
+  width: 100px;
+}
+.play-btn {
+  background: #ff4d88;
+  border: none;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  font-size: 22px;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.play-btn:hover {
+  transform: scale(1.1);
+}
+
+.menu-music-player button {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  background: #ff4d88;
+  color: white;
+  transition: 0.3s;
+}
+
+.menu-music-player button:hover {
+  transform: scale(1.1);
+}
+
+.music-info {
+  font-weight: 600;
+  color: #ff4d88;
+  min-width: 120px;
+  text-align: center;
 }
 
 .card {
@@ -202,4 +321,26 @@ body {
   color: #ff4d88;
   margin: 20px 0;
   font-weight: bold;
+}
+
+/* HEART FLOAT EFFECT */
+.floating-heart {
+  position: fixed;
+  bottom: -20px;
+  color: #ff4d88;
+  animation: floatUp linear forwards;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.9;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-110vh) scale(1.5);
+    opacity: 0;
+  }
 }

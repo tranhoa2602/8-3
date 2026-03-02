@@ -4,220 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Love Lock 💖</title>
-
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family:
-          Segoe UI,
-          sans-serif;
-      }
-
-      body {
-        height: 100vh;
-        overflow: hidden;
-        background:
-          linear-gradient(45deg, #f8c8dc 25%, transparent 25%) -20px 0,
-          linear-gradient(-45deg, #f8c8dc 25%, transparent 25%) -20px 0,
-          linear-gradient(45deg, transparent 75%, #f8c8dc 75%),
-          linear-gradient(-45deg, transparent 75%, #f8c8dc 75%);
-        background-size: 40px 40px;
-        background-color: #ffd6e7;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      /* LOCK */
-      .lock-box {
-        background: #ffeaf3;
-        padding: 40px;
-        border-radius: 30px;
-        display: flex;
-        gap: 50px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        transition: 1s;
-      }
-
-      .hide {
-        transform: translateY(-120%);
-        opacity: 0;
-      }
-
-      .lock-box img {
-        width: 260px;
-        height: 360px;
-        object-fit: cover;
-        border-radius: 20px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-      }
-
-      .lock-right {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-      .heart {
-        font-size: 28px;
-        color: #ff4d88;
-        margin-bottom: 15px;
-      }
-
-      .dots {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 25px;
-      }
-      .dot {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        border: 2px solid #ff4d88;
-      }
-      .dot.active {
-        background: #ff4d88;
-      }
-
-      .keypad {
-        display: grid;
-        grid-template-columns: repeat(3, 70px);
-        gap: 15px;
-      }
-      .key {
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
-        background: white;
-        border: none;
-        font-size: 20px;
-        color: #ff4d88;
-        cursor: pointer;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      }
-      .key:hover {
-        transform: scale(1.1);
-        background: #ff4d88;
-        color: white;
-      }
-
-      /* MENU */
-      .menu {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: linear-gradient(135deg, #ffb6d9, #ffcde6);
-        transform: translateY(100%);
-        transition: 1s;
-      }
-      .menu.show {
-        transform: translateY(0);
-      }
-
-      .menu-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 280px);
-        grid-template-rows: repeat(2, 150px);
-        gap: 40px;
-      }
-
-      .card {
-        background: rgba(255, 255, 255, 0.25);
-        backdrop-filter: blur(20px);
-        border-radius: 30px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        font-size: 18px;
-        cursor: pointer;
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-        transition: 0.3s;
-      }
-      .card:hover {
-        transform: scale(1.05);
-        background: white;
-      }
-      .card span {
-        font-size: 45px;
-        margin-bottom: 10px;
-      }
-
-      /* POPUP */
-      .popup {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 182, 217, 0.6);
-        backdrop-filter: blur(10px);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        opacity: 0;
-        pointer-events: none;
-        transition: 0.4s;
-      }
-
-      .popup.show {
-        opacity: 1;
-        pointer-events: auto;
-      }
-
-      .popup-card {
-        width: 350px;
-        background: white;
-        border-radius: 30px;
-        padding: 30px;
-        text-align: center;
-        position: relative;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-      }
-
-      .close-btn {
-        position: absolute;
-        right: 15px;
-        top: 15px;
-        background: #ff4d88;
-        color: white;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-      }
-
-      .days-number {
-        font-size: 40px;
-        color: #ff4d88;
-        margin: 20px 0;
-        font-weight: bold;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
-
   <body>
     <!-- LOCK -->
     <div class="lock-box" id="lockBox">
-      <img src="picture/pic1.jpg" />
+      <img src="picture/pic1.jpg" alt="My Love" />
+
       <div class="lock-right">
         <div class="heart">💗</div>
+
         <div class="dots">
           <div class="dot"></div>
           <div class="dot"></div>
           <div class="dot"></div>
           <div class="dot"></div>
         </div>
+
         <div class="keypad">
           <button class="key" onclick="press(1)">1</button>
           <button class="key" onclick="press(2)">2</button>
@@ -245,7 +48,38 @@
         <div class="card"><span>🌸</span>Image</div>
         <div class="card"><span>🎁</span>Gift</div>
       </div>
+      <!-- MUSIC PLAYER INSIDE MENU -->
+      <div class="music-player">
+
+  <div class="music-left">
+    <img src="thumbnail.jpg" alt="thumb">
+    <div>
+      <div class="music-title">Love Is</div>
+      <div class="music-sub">Dangrangto</div>
     </div>
+  </div>
+
+  <div class="music-center">
+    <div class="controls">
+      <button id="prevBtn">⏮</button>
+      <button id="playBtn" class="play-btn">▶</button>
+      <button id="nextBtn">⏭</button>
+    </div>
+
+    <div class="progress-area">
+      <span id="currentTime">00:00</span>
+      <input type="range" id="progressBar" value="0">
+      <span id="duration">00:00</span>
+    </div>
+  </div>
+
+  <div class="music-right">
+    🔊
+    <input type="range" id="volumeBar" min="0" max="1" step="0.01" value="1">
+  </div>
+
+  <audio id="audioPlayer" src="audio/nguyenhaxd - Love Is.mp3"></audio>
+</div>
 
     <!-- DAYS POPUP -->
     <div class="popup" id="daysPopup">
@@ -257,61 +91,6 @@
       </div>
     </div>
 
-    <script>
-      const correctPassword = "0302";
-      let input = "";
-
-      function press(num) {
-        if (input.length >= 4) return;
-        input += num;
-        updateDots();
-        if (input.length === 4) {
-          if (input === correctPassword) {
-            unlock();
-          } else {
-            setTimeout(() => {
-              alert("Sai mật khẩu 😝");
-              input = "";
-              updateDots();
-            }, 200);
-          }
-        }
-      }
-
-      function clearPass() {
-        input = "";
-        updateDots();
-      }
-
-      function updateDots() {
-        document.querySelectorAll(".dot").forEach((dot, i) => {
-          dot.classList.toggle("active", i < input.length);
-        });
-      }
-
-      function unlock() {
-        document.getElementById("lockBox").classList.add("hide");
-        setTimeout(() => {
-          document.getElementById("menu").classList.add("show");
-        }, 600);
-      }
-
-      function openDays() {
-        document.getElementById("daysPopup").classList.add("show");
-        calculateDays();
-      }
-
-      function closeDays() {
-        document.getElementById("daysPopup").classList.remove("show");
-      }
-
-      function calculateDays() {
-        let startDate = new Date("2024-02-14"); // 👉 đổi ngày bắt đầu yêu tại đây
-        let today = new Date();
-        let diff = today - startDate;
-        let days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        document.getElementById("daysCount").innerText = days;
-      }
-    </script>
+    <script src="script.js"></script>
   </body>
 </html>
