@@ -104,18 +104,21 @@ const volumeBar = document.getElementById("volumeBar");
 
 let isPlaying = false;
 
-playBtn.onclick = () => {
-  if (isPlaying) {
-    audio.pause();
-  } else {
+playBtn.addEventListener("click", () => {
+  if (audio.paused) {
     audio.play();
+  } else {
+    audio.pause();
   }
-  isPlaying = !isPlaying;
-};
+});
 
 /* Update duration */
-audio.addEventListener("loadedmetadata", () => {
-  durationEl.innerText = formatTime(audio.duration);
+audio.addEventListener("play", () => {
+  playBtn.innerHTML = "⏸";
+});
+
+audio.addEventListener("pause", () => {
+  playBtn.innerHTML = "▶";
 });
 
 /* Update progress */
@@ -140,4 +143,272 @@ function formatTime(time) {
   return `${minutes.toString().padStart(2, "0")}:${seconds
     .toString()
     .padStart(2, "0")}`;
+}
+
+function unlock() {
+  document.getElementById("lockBox").classList.add("hide");
+
+  setTimeout(() => {
+    document.getElementById("menu").classList.add("show");
+
+    startHearts();
+
+    // 👉 Tự phát nhạc
+    audio.play();
+    playBtn.innerHTML = "⏸";
+  }, 600);
+}
+
+/* ===== LETTER EFFECT ===== */
+
+const letterContent = `Hé Nho Chị Iu 💖
+
+Hôm nay là một ngày đặc biệt của phụ nữ.
+Em chúc chị iu của em hôm nay thật tuyệt vời.
+Thật nhiều phép màu và công việc thật suôn sẽ.
+Mặc dù mình mới quen biết nhau nhưng em cảm thấy 1 cái zì đó rất cuốn hút.
+Em mong mình có thể quen nhau lâu dài.
+
+Mãi Yêu 💗`;
+
+let typingIndex = 0;
+let typingInterval;
+
+const menuSong = "audio/Love Is.mp3";
+const letterSong = "audio/MỘT ĐỜI.mp3";
+
+function openLetter() {
+  document.getElementById("letterPopup").classList.add("show");
+
+  // reset chữ
+  typingIndex = 0;
+  document.getElementById("letterText").innerHTML = "";
+  startTyping();
+
+  // đổi sang nhạc letter
+  audio.src = letterSong;
+  audio.play();
+}
+
+function closeLetter() {
+  document.getElementById("letterPopup").classList.remove("show");
+
+  clearInterval(typingInterval);
+
+  // quay lại nhạc menu
+  audio.src = menuSong;
+  audio.pause();
+}
+
+function startTyping() {
+  typingInterval = setInterval(() => {
+    if (typingIndex < letterContent.length) {
+      document.getElementById("letterText").innerHTML +=
+        letterContent.charAt(typingIndex);
+      typingIndex++;
+    } else {
+      clearInterval(typingInterval);
+    }
+  }, 80); // tốc độ gõ chữ (càng nhỏ càng nhanh)
+}
+
+/* ===== IMAGE SECTION ===== */
+
+const imageSong = "audio/Dạo Bước Hong Kong 1999.mp3";
+
+const carouselImages = document.querySelectorAll(".carousel img");
+const previewImage = document.getElementById("previewImage");
+
+carouselImages.forEach((img) => {
+  img.addEventListener("click", () => {
+    previewImage.src = img.src;
+  });
+});
+
+function openImage() {
+  document.getElementById("imagePopup").classList.add("show");
+
+  audio.src = imageSong;
+  audio.load(); // 🔥 bắt buộc thêm dòng này
+  audio.play().catch((err) => console.log(err));
+}
+
+function closeImage() {
+  document.getElementById("imagePopup").classList.remove("show");
+
+  audio.pause();
+}
+
+/* ===== GIFT FLOWER EFFECT ===== */
+let ctx, canvas;
+let animationId;
+let flowers = [];
+let time = 0;
+
+let bouquetMode = false;
+let bouquetProgress = 0;
+
+function openGift() {
+  document.getElementById("giftPopup").classList.add("show");
+
+  canvas = document.getElementById("flowerCanvas");
+  ctx = canvas.getContext("2d");
+
+  canvas.width = 500;
+  canvas.height = 450;
+
+  flowers = [];
+  bouquetMode = false;
+  bouquetProgress = 0;
+
+  for (let i = 0; i < 24; i++) {
+    flowers.push(createFlower(i, 24));
+  }
+
+  animate();
+}
+
+function closeGift() {
+  document.getElementById("giftPopup").classList.remove("show");
+  cancelAnimationFrame(animationId);
+}
+
+function createFlower(index, total) {
+  let petalCount = 10 + Math.floor(Math.random() * 4);
+  let petals = [];
+
+  for (let i = 0; i < petalCount; i++) {
+    petals.push({
+      angle: ((Math.PI * 2) / petalCount) * i,
+      stretch: 0.8 + Math.random() * 0.3,
+    });
+  }
+
+  // vị trí trái tim khi bó
+  let t = (index / total) * Math.PI * 2;
+  let heartX = 16 * Math.pow(Math.sin(t), 3);
+  let heartY =
+    13 * Math.cos(t) -
+    5 * Math.cos(2 * t) -
+    2 * Math.cos(3 * t) -
+    Math.cos(4 * t);
+
+  return {
+    startX: 50 + Math.random() * 400,
+    baseY: 430,
+    targetY: 120 + Math.random() * 60,
+    curve: (Math.random() - 0.5) * 60,
+    growth: 0,
+    size: 15 + Math.random() * 5,
+    petals: petals,
+
+    // vị trí khi bó
+    bouquetX: canvas.width / 2 + heartX * 8,
+    bouquetY: 220 - heartY * 6,
+  };
+}
+
+function drawStem(f, ease) {
+  let headY = f.baseY - (f.baseY - f.targetY) * ease;
+
+  let wind = Math.sin(time * 0.002 + f.startX) * 8;
+
+  // nội suy sang vị trí bó
+  let currentX = f.startX + (f.bouquetX - f.startX) * bouquetProgress;
+
+  let currentHeadY = headY + (f.bouquetY - headY) * bouquetProgress;
+
+  ctx.beginPath();
+  ctx.moveTo(currentX, f.baseY);
+
+  let cpX = currentX + f.curve * (1 - bouquetProgress);
+  let cpY = f.baseY - 260;
+
+  ctx.quadraticCurveTo(cpX, cpY, currentX + wind, currentHeadY);
+
+  ctx.strokeStyle = "#2e7d32";
+  ctx.lineWidth = 3;
+  ctx.lineCap = "round";
+  ctx.stroke();
+
+  return { x: currentX + wind, y: currentHeadY };
+}
+
+function drawFlower(f, headPos) {
+  ctx.save();
+
+  ctx.translate(headPos.x, headPos.y);
+
+  let scale = 1 + 0.2 * bouquetProgress;
+  ctx.scale(scale, scale);
+
+  f.petals.forEach((p) => {
+    ctx.save();
+    ctx.rotate(p.angle);
+
+    let spread = f.size * p.stretch;
+
+    let grad = ctx.createRadialGradient(0, -spread, 2, 0, -spread, spread);
+    grad.addColorStop(0, "#ffffff");
+    grad.addColorStop(1, "#ff1f5a");
+
+    ctx.beginPath();
+    ctx.ellipse(0, -spread, f.size * 0.6, spread, 0, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    ctx.restore();
+  });
+
+  ctx.beginPath();
+  ctx.arc(0, 0, f.size * 0.4, 0, Math.PI * 2);
+  ctx.fillStyle = "#ffd54f";
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function drawRibbon() {
+  ctx.fillStyle = "#d6002a";
+
+  ctx.beginPath();
+  ctx.moveTo(220, 360);
+  ctx.lineTo(280, 360);
+  ctx.lineTo(260, 400);
+  ctx.lineTo(240, 400);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  time += 16;
+
+  let allGrown = true;
+
+  flowers.forEach((f) => {
+    if (f.growth < 1) {
+      f.growth += 0.004; // mọc chậm
+      allGrown = false;
+    }
+
+    let ease = 1 - Math.pow(1 - f.growth, 3);
+
+    let headPos = drawStem(f, ease);
+
+    if (f.growth >= 1) {
+      drawFlower(f, headPos);
+    }
+  });
+
+  if (allGrown && bouquetProgress < 1) {
+    bouquetProgress += 0.01;
+  }
+
+  if (bouquetProgress > 0.9) {
+    drawRibbon();
+  }
+
+  animationId = requestAnimationFrame(animate);
 }

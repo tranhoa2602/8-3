@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Love Lock 💖</title>
     <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
   </head>
   <body>
     <!-- LOCK -->
@@ -44,15 +45,20 @@
         <div class="card" onclick="openDays()">
           <span>⏳</span>Days Together
         </div>
-        <div class="card"><span>💌</span>Letter</div>
-        <div class="card"><span>🌸</span>Image</div>
-        <div class="card"><span>🎁</span>Gift</div>
-      </div>
+        <div class="card" onclick="openLetter()">
+          <span>💌</span>Letter
+        </div>
+        <div class="card" onclick="openImage()"><span>🌸</span>Image</div>
+        <div class="card" onclick="openGift()">
+          <span>🎁</span>
+          <p>Gift</p>
+        </div>
+      </div>  
+
       <!-- MUSIC PLAYER INSIDE MENU -->
       <div class="music-player">
 
   <div class="music-left">
-    <img src="thumbnail.jpg" alt="thumb">
     <div>
       <div class="music-title">Love Is</div>
       <div class="music-sub">Dangrangto</div>
@@ -78,7 +84,7 @@
     <input type="range" id="volumeBar" min="0" max="1" step="0.01" value="1">
   </div>
 
-  <audio id="audioPlayer" src="audio/nguyenhaxd - Love Is.mp3"></audio>
+  <audio id="audioPlayer" src="audio/Love Is.mp3"></audio>
 </div>
 
     <!-- DAYS POPUP -->
@@ -90,6 +96,62 @@
         <p>ngày rồi đó 💖</p>
       </div>
     </div>
+
+    <!-- LETTER POPUP -->
+<div class="popup" id="letterPopup">
+  <div class="popup-card">
+    <div class="close-btn" onclick="closeLetter()">✕</div>
+    <h2>💌 Gửi Chị Iu</h2>
+    <p id="letterText"></p>
+  </div>
+</div>
+
+<!-- IMAGE POPUP -->
+<div class="popup" id="imagePopup">
+  <div class="popup-card image-card">
+    <div class="close-btn" onclick="closeImage()">✕</div>
+    <h2>📸 Ảnh Xinh</h2>
+
+    <div class="carousel">
+      <div class="carousel-track">
+        <img src="picture/pic1.jpg">
+        <img src="picture/pic2.jpg">
+        <img src="picture/pic3.jpg">
+        <img src="picture/pic4.jpg">
+        <img src="picture/pic5.jpg">
+        <img src="picture/pic6.jpg">
+        <img src="picture/pic7.jpg">
+        <img src="picture/pic8.jpg">
+
+        <img src="picture/pic1.jpg">
+        <img src="picture/pic2.jpg">
+        <img src="picture/pic3.jpg">
+        <img src="picture/pic4.jpg">
+        <img src="picture/pic5.jpg">
+        <img src="picture/pic6.jpg">
+        <img src="picture/pic7.jpg">
+        <img src="picture/pic8.jpg">
+      </div>
+    </div>
+
+    <div class="preview">
+      <img id="previewImage" src="picture/pic1.jpg">
+    </div>
+
+  </div>
+</div>
+
+  <!-- GIFT POPUP -->
+<div class="popup" id="giftPopup">
+  <div class="popup-card">
+    <div class="close-btn" onclick="closeGift()">✕</div>
+    <h2>🎁 Dành Cho Chị 💕</h2>
+
+    <canvas id="flowerCanvas"></canvas>
+    <div id="loveRain"></div>
+
+  </div>
+</div>
 
     <script src="script.js"></script>
   </body>
