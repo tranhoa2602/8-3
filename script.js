@@ -84,7 +84,7 @@ function closeDays() {
 }
 
 function calculateDays() {
-  let startDate = new Date("2024-02-14");
+  let startDate = new Date("2026-02-03");
   let today = new Date();
 
   let diff = today - startDate;
