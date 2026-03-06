@@ -84,7 +84,7 @@ function closeDays() {
 }
 
 function calculateDays() {
-  let startDate = new Date("2026-02-03");
+  let startDate = new Date("2024-02-14");
   let today = new Date();
 
   let diff = today - startDate;
@@ -218,13 +218,14 @@ function closeImage() {
 
   audio.pause();
 }
-
-/* ===== GIFT FLOWER ===== */
-
-let canvas, ctx;
-let flowers = [];
+/* ===== GIFT FLOWER EFFECT ===== */
+let ctx, canvas;
 let animationId;
+let flowers = [];
 let time = 0;
+
+let bouquetMode = false;
+let bouquetProgress = 0;
 
 function openGift() {
   document.getElementById("giftPopup").classList.add("show");
@@ -236,15 +237,11 @@ function openGift() {
   canvas.height = 450;
 
   flowers = [];
+  bouquetMode = false;
+  bouquetProgress = 0;
 
-  for (let i = 0; i < 25; i++) {
-    flowers.push({
-      x: Math.random() * canvas.width,
-      y: canvas.height,
-      targetY: 150 + Math.random() * 100,
-      size: 10 + Math.random() * 10,
-      growth: 0,
-    });
+  for (let i = 0; i < 24; i++) {
+    flowers.push(createFlower(i, 24));
   }
 
   animate();
@@ -255,25 +252,142 @@ function closeGift() {
   cancelAnimationFrame(animationId);
 }
 
-function drawFlower(f) {
+function createFlower(index, total) {
+  let petalCount = 10 + Math.floor(Math.random() * 4);
+  let petals = [];
+
+  for (let i = 0; i < petalCount; i++) {
+    petals.push({
+      angle: ((Math.PI * 2) / petalCount) * i,
+      stretch: 0.8 + Math.random() * 0.3,
+    });
+  }
+
+  // vị trí trái tim khi bó
+  let t = (index / total) * Math.PI * 2;
+  let heartX = 16 * Math.pow(Math.sin(t), 3);
+  let heartY =
+    13 * Math.cos(t) -
+    5 * Math.cos(2 * t) -
+    2 * Math.cos(3 * t) -
+    Math.cos(4 * t);
+
+  return {
+    startX: 50 + Math.random() * 400,
+    baseY: 430,
+    targetY: 120 + Math.random() * 60,
+    curve: (Math.random() - 0.5) * 60,
+    growth: 0,
+    size: 15 + Math.random() * 5,
+    petals: petals,
+
+    // vị trí khi bó
+    bouquetX: canvas.width / 2 + heartX * 8,
+    bouquetY: 220 - heartY * 6,
+  };
+}
+
+function drawStem(f, ease) {
+  let headY = f.baseY - (f.baseY - f.targetY) * ease;
+
+  let wind = Math.sin(time * 0.002 + f.startX) * 8;
+
+  // nội suy sang vị trí bó
+  let currentX = f.startX + (f.bouquetX - f.startX) * bouquetProgress;
+
+  let currentHeadY = headY + (f.bouquetY - headY) * bouquetProgress;
+
   ctx.beginPath();
-  ctx.arc(f.x, f.y - f.growth, f.size, 0, Math.PI * 2);
-  ctx.fillStyle = "#ff4d88";
+  ctx.moveTo(currentX, f.baseY);
+
+  let cpX = currentX + f.curve * (1 - bouquetProgress);
+  let cpY = f.baseY - 260;
+
+  ctx.quadraticCurveTo(cpX, cpY, currentX + wind, currentHeadY);
+
+  ctx.strokeStyle = "#2e7d32";
+  ctx.lineWidth = 3;
+  ctx.lineCap = "round";
+  ctx.stroke();
+
+  return { x: currentX + wind, y: currentHeadY };
+}
+
+function drawFlower(f, headPos) {
+  ctx.save();
+
+  ctx.translate(headPos.x, headPos.y);
+
+  let scale = 1 + 0.2 * bouquetProgress;
+  ctx.scale(scale, scale);
+
+  f.petals.forEach((p) => {
+    ctx.save();
+    ctx.rotate(p.angle);
+
+    let spread = f.size * p.stretch;
+
+    let grad = ctx.createRadialGradient(0, -spread, 2, 0, -spread, spread);
+    grad.addColorStop(0, "#ffffff");
+    grad.addColorStop(1, "#ff1f5a");
+
+    ctx.beginPath();
+    ctx.ellipse(0, -spread, f.size * 0.6, spread, 0, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    ctx.restore();
+  });
+
+  ctx.beginPath();
+  ctx.arc(0, 0, f.size * 0.4, 0, Math.PI * 2);
+  ctx.fillStyle = "#ffd54f";
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function drawRibbon() {
+  ctx.fillStyle = "#d6002a";
+
+  ctx.beginPath();
+  ctx.moveTo(220, 360);
+  ctx.lineTo(280, 360);
+  ctx.lineTo(260, 400);
+  ctx.lineTo(240, 400);
+  ctx.closePath();
   ctx.fill();
 }
 
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  time += 0.02;
+  time += 16;
+
+  let allGrown = true;
 
   flowers.forEach((f) => {
-    if (f.growth < f.y - f.targetY) {
-      f.growth += 1.2;
+    if (f.growth < 1) {
+      f.growth += 0.004; // mọc chậm
+      allGrown = false;
     }
 
-    drawFlower(f);
+    let ease = 1 - Math.pow(1 - f.growth, 3);
+
+    let headPos = drawStem(f, ease);
+
+    if (f.growth >= 1) {
+      drawFlower(f, headPos);
+    }
   });
+
+  if (allGrown && bouquetProgress < 1) {
+    bouquetProgress += 0.01;
+  }
+
+  if (bouquetProgress > 0.9) {
+    drawRibbon();
+  }
 
   animationId = requestAnimationFrame(animate);
 }
