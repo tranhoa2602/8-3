@@ -130,18 +130,24 @@ body {
 
 .music-player {
   position: absolute;
-  bottom: 20px;
+  bottom: 15px;
   left: 50%;
   transform: translateX(-50%);
-  width: 90%;
-  max-width: 900px;
+
+  width: 80%;
+  max-width: 650px;
+
   background: #1e1e2f;
   color: white;
-  padding: 15px 25px;
-  border-radius: 12px;
+
+  padding: 8px 15px;
+  border-radius: 10px;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  font-size: 14px;
 }
 
 /* LEFT */
